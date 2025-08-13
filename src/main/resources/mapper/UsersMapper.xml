@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<mapper namespace="com.snownilight.backtowork.mapper.UsersMapper">
+
+    <select id="findAll" resultType="Users">
+        SELECT * FROM users
+    </select>
+
+    <select id="findById" parameterType="Long" resultType="Users">
+        SELECT * FROM users WHERE id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="Users" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO users (name, email) VALUES (#{name}, #{email})
+    </insert>
+
+    <update id="update" parameterType="Users">
+        UPDATE users SET name = #{name}, email = #{email} WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="Long">
+        DELETE FROM users WHERE id = #{id}
+    </delete>
+
+</mapper>
