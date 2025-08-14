@@ -1,5 +1,6 @@
 package com.snownilight.backtowork.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.snownilight.backtowork.mapper.UsersMapper;
@@ -10,6 +11,7 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+    @Autowired
     private final UsersMapper usersMapper;
 
     public UserService(UsersMapper usersMapper) {
