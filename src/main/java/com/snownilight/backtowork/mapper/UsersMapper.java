@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.snownilight.backtowork.model.Users;
+import com.snownilight.backtowork.model.po.Users;
 
 @Mapper
 public interface UsersMapper {

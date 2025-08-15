@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.snownilight.backtowork.common.ApiResponse;
-import com.snownilight.backtowork.model.Users;
+import com.snownilight.backtowork.model.po.Users;
 import com.snownilight.backtowork.service.UserService;
 
 import java.util.Optional;

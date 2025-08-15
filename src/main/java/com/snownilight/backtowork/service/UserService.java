@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.snownilight.backtowork.mapper.UsersMapper;
-import com.snownilight.backtowork.model.Users;
+import com.snownilight.backtowork.model.po.Users;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.snownilight.backtowork.model;
+package com.snownilight.backtowork.model.po;
 
 import lombok.*;
 
