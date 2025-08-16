@@ -36,10 +36,92 @@
         WHERE p.id = #{id}
     </select>
 
+    <select id="selectProducts" parameterType="com.snownilight.backtowork.model.dto.PageRequest" resultMap="ProductDetailMap">
+        SELECT
+            p.id AS product_id,
+            p.name,
+            p.description,
+            i.price,
+            i.stock,
+            i.status,
+            i.created_at AS item_created_at,
+            i.updated_at AS item_updated_at
+        FROM products p
+        LEFT JOIN product_items i ON p.id = i.product_id
+        <where>
+            <if test="search != null and search != ''">
+                (p.name LIKE CONCAT('%', #{search}, '%') OR p.description LIKE CONCAT('%', #{search}, '%'))
+            </if>
+        </where>
+        <choose>
+            <when test="sortBy != null and sortBy != ''">
+                ORDER BY ${sortBy} 
+                <choose>
+                    <when test="sortOrder != null and sortOrder.toUpperCase() == 'ASC'">ASC</when>
+                    <otherwise>DESC</otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                ORDER BY p.id 
+                <choose>
+                    <when test="sortOrder != null and sortOrder.toUpperCase() == 'ASC'">ASC</when>
+                    <otherwise>DESC</otherwise>
+                </choose>
+            </otherwise>
+        </choose>
+        LIMIT #{size} OFFSET #{offset};
+    </select>
+
+    <!-- 計算總筆數 -->
+    <select id="countProducts" parameterType="com.snownilight.backtowork.model.dto.PageRequest" resultType="long">
+        SELECT COUNT(*) 
+        FROM products p
+        <where>
+            <if test="search != null and search != ''">
+                (p.name LIKE CONCAT('%', #{search}, '%') 
+                 OR p.description LIKE CONCAT('%', #{search}, '%'))
+            </if>
+        </where>
+    </select>
+
+    <insert id="insertProduct" parameterType="com.snownilight.backtowork.model.dto.CreateOrUpdateProduct" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO products (name, description)
+        VALUES (#{name}, #{description});
+    </insert>
+
+    <insert id="insertProductItem" parameterType="com.snownilight.backtowork.model.dto.CreateOrUpdateProduct">
+        INSERT INTO product_items (product_id, price, stock, status)
+        VALUES (#{id}, #{price}, #{stock}, #{status});
+    </insert>
+
+    <update id="updateProductInfo" parameterType="com.snownilight.backtowork.model.dto.UpdateProductInfo">
+        UPDATE products
+        SET name = #{name}, description = #{description}
+        WHERE id = #{id};
+    </update>
+
+    <update id="updateProductItem" parameterType="com.snownilight.backtowork.model.dto.UpdateProductItem">
+        UPDATE product_items
+        SET price = #{price}, stock = #{stock}, status = #{status}
+        WHERE product_id = #{id};
+    </update>
+
     <update id="updateProductStatus">
         UPDATE product_items
         SET status = #{status}
         WHERE product_id = #{id}
     </update>
+
+    <!-- 刪除商品項目 -->
+    <delete id="deleteProductItemByProductId" parameterType="long">
+        DELETE FROM product_items
+        WHERE product_id = #{id};
+    </delete>
+
+    <!-- 刪除商品基本資訊 -->
+    <delete id="deleteProductById" parameterType="long">
+        DELETE FROM products
+        WHERE id = #{id};
+    </delete>
 
 </mapper>
