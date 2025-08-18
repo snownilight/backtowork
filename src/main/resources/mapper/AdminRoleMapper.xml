@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.snownilight.backtowork.mapper.AdminRoleMapper">
+
+  <select id="findAll" resultType="com.snownilight.backtowork.model.po.AdminRole">
+    SELECT ar.id, ar.name, ar.description FROM admin_role ar
+  </select>
+
+</mapper>

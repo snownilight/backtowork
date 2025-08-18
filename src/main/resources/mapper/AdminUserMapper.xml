@@ -4,40 +4,27 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.snownilight.backtowork.mapper.AdminUserMapper">
-    <select id="findByName" parameterType="String" resultType="com.snownilight.backtowork.model.AdminUser">
-        SELECT * FROM admin_users WHERE username = #{username}
+    <resultMap id="AdminUserMap" type="com.snownilight.backtowork.model.po.AdminUser">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="passwordHash" column="password_hash"/>
+        <result property="roleId" column="role_id"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <select id="findByUsername" resultMap="AdminUserMap">
+        SELECT * FROM admin_user WHERE username = #{username}
     </select>
 
-    <insert id="insertAdminUser" parameterType="com.snownilight.backtowork.model.AdminUser" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO admin_users (username, password_hash, status, last_login_at)
-        VALUES (#{username}, #{passwordHash}, #{status}, #{lastLoginAt})
+    <insert id="createAdminUser" parameterType="com.snownilight.backtowork.model.po.AdminUser" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO admin_user (username, password_hash, role_id, status)
+        VALUES (#{username}, #{passwordHash}, #{roleId}, #{status})
     </insert>
 
-    <update id="updateAdminUser" parameterType="com.snownilight.backtowork.model.AdminUser">
-        UPDATE admin_users
-        SET username = #{username}, password_hash = #{passwordHash}, status = #{status}, last_login_at = #{lastLoginAt}
+    <update id="updateAdminUser" parameterType="com.snownilight.backtowork.model.po.AdminUser">
+        UPDATE admin_user
+        SET password_hash = #{passwordHash}, role_id = #{roleId}, status = #{status}
         WHERE id = #{id}
     </update>
 
-    <delete id="deleteAdminUser" parameterType="Long">
-        DELETE FROM admin_users WHERE id = #{id}
-    </delete>
-
-    <update id="updateAdminUserStatus" parameterType="map">
-        UPDATE admin_users
-        SET status = #{status}
-        WHERE id = #{id}
-    </update>
-
-    <update id="updateAdminUserPassword" parameterType="map">
-        UPDATE admin_users
-        SET password_hash = #{passwordHash}
-        WHERE id = #{id}
-    </update>
-
-    <update id="updateAdminUserLastLogin" parameterType="map">
-        UPDATE admin_users
-        SET last_login_at = #{lastLoginAt}
-        WHERE id = #{id}
-    </update>
 </mapper>

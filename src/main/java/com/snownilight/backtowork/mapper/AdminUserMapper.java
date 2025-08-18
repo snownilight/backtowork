@@ -6,11 +6,7 @@ import com.snownilight.backtowork.model.po.AdminUser;
 
 @Mapper
 public interface AdminUserMapper {
-    AdminUser findByName(String username);
-    boolean insertAdminUser(AdminUser adminUser);
+    AdminUser findByUsername(String username);
+    boolean createAdminUser(AdminUser adminUser);
     boolean updateAdminUser(AdminUser adminUser);
-    boolean deleteAdminUser(Long id);
-    boolean updateAdminUserStatus(Long id, Integer status);
-    boolean updateAdminUserPassword(Long id, String passwordHash);
-    boolean updateAdminUserLastLogin(Long id, String lastLoginAt);
 }
