@@ -4,8 +4,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.snownilight.backtowork.common.ApiResponse;
+import com.snownilight.backtowork.model.dto.CreateOrUpdateAdminUser;
 import com.snownilight.backtowork.model.dto.LoginRequest;
 import com.snownilight.backtowork.model.enums.AdminRoleEnum;
+import com.snownilight.backtowork.model.vo.AdminUserInfoVO;
 import com.snownilight.backtowork.model.vo.LoginResponse;
 import com.snownilight.backtowork.service.AdminUserService;
 import com.snownilight.backtowork.utils.JwtUtil;
@@ -34,5 +36,13 @@ public class AdminAuthController {
                 })
                 .orElse(ApiResponse.error(401, "Invalid username or password"));
     }
+
+    @PostMapping("/register")
+    public ApiResponse<AdminUserInfoVO> register(@RequestBody CreateOrUpdateAdminUser registerAdminUser) {
+        return adminUserService.createAdminUser(registerAdminUser, false)
+                .map(adminUserInfo -> ApiResponse.success("Registration successful", adminUserInfo))
+                .orElseGet(() -> ApiResponse.error(500, "Registration failed"));
+    }
+    
     
 }

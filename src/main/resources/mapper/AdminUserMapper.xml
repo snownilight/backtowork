@@ -16,6 +16,10 @@
         SELECT * FROM admin_user WHERE username = #{username}
     </select>
 
+    <select id="existByUsername" resultType="int">
+        SELECT COUNT(1) FROM admin_user WHERE username = #{username}
+    </select>
+
     <insert id="createAdminUser" parameterType="com.snownilight.backtowork.model.po.AdminUser" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO admin_user (username, password_hash, role_id, status)
         VALUES (#{username}, #{passwordHash}, #{roleId}, #{status})

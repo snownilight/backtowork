@@ -3,13 +3,18 @@ package com.snownilight.backtowork.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.snownilight.backtowork.mapper.AdminRoleMapper;
 import com.snownilight.backtowork.mapper.AdminUserMapper;
+import com.snownilight.backtowork.model.dto.CreateOrUpdateAdminUser;
+import com.snownilight.backtowork.model.enums.AdminRoleEnum;
 import com.snownilight.backtowork.model.po.AdminRole;
 import com.snownilight.backtowork.model.po.AdminUser;
+import com.snownilight.backtowork.model.vo.AdminUserInfoVO;
 
 @Service
 public class AdminUserService {
@@ -28,11 +33,33 @@ public class AdminUserService {
         return Optional.ofNullable(adminUserMapper.findByUsername(username));
     }
 
-    public Optional<AdminUser> createAdminUser(AdminUser adminUser) {
-        // Encrypt the password before saving
-        adminUser.setPasswordHash(passwordEncoder.encode(adminUser.getPasswordHash()));
-        boolean created = adminUserMapper.createAdminUser(adminUser);
-        return created ? Optional.of(adminUser) : Optional.empty();
+    @Transactional
+    public Optional<AdminUserInfoVO> createAdminUser(CreateOrUpdateAdminUser adminUser, Boolean createBySuperAdmin) {
+        // Check if username already exists
+        if (adminUserMapper.existByUsername(adminUser.getUsername()) > 0) {
+            throw new IllegalArgumentException("Username already exists");
+        }
+
+        AdminUser createAdminUser = AdminUser.builder()
+                .username(adminUser.getUsername())
+                .passwordHash(passwordEncoder.encode(adminUser.getPassword()))
+                .roleId(createBySuperAdmin ? AdminRoleEnum.MANAGER.getId() : AdminRoleEnum.PENDING.getId())
+                .status(1) // Default to enabled
+                .build();
+
+        try { // Handle race condition for duplicate usernames
+            adminUserMapper.createAdminUser(createAdminUser);
+        } catch (DuplicateKeyException e) {
+            throw new IllegalArgumentException("Username already exists");
+        }
+        
+        AdminUserInfoVO adminUserInfo = AdminUserInfoVO.builder()
+                .id(createAdminUser.getId())
+                .username(createAdminUser.getUsername())
+                .role(AdminRoleEnum.fromId(createAdminUser.getRoleId()).getName())
+                .status(createAdminUser.getStatus())
+                .build();
+        return Optional.of(adminUserInfo);
     }
 
     public Optional<AdminUser> updateAdminUser(AdminUser adminUser) {

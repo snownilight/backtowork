@@ -9,4 +9,5 @@ public interface AdminUserMapper {
     AdminUser findByUsername(String username);
     boolean createAdminUser(AdminUser adminUser);
     boolean updateAdminUser(AdminUser adminUser);
+    int existByUsername(String username);
 }

@@ -16,7 +16,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/admin/auth/login").permitAll() // Allow public access to login endpoint
+                .requestMatchers("/admin/auth/**").permitAll() // Allow public access to login endpoint
                 .requestMatchers("/api/**").permitAll()
                 .requestMatchers("/products/**").permitAll()
                 .anyRequest().authenticated() // All other requests require authentication
